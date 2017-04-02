@@ -607,6 +607,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
     echo "Running upgrade"
 
     // log upgrade start time
+    /*
     try {
       sh """
           echo "Started: \$(date +%s)" > upgrade_time.txt
@@ -617,6 +618,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
       echo "Failure writing upgrade_time"
       echo err.message
     }
+    */
 
     upgrade_output = run_upgrade_return_results(release, host_ip)
 
@@ -638,6 +640,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
             if (failure_output.length() == 0){
                 echo "Upgrade succeeded"
                 // log upgrade end time
+                /*
                 try {
                   sh """
                     echo "Completed: \$(date +%s)" >> upgrade_time.txt
@@ -649,13 +652,14 @@ def bash_upgrade_openstack(release='master', retries=2) {
                   echo "Failure writing upgrade_time"
                   echo err.message
                 }
-
+                */
                 echo "Echoing Upgrade Results for retry #" + (i + 1)
                 echo "------------------------------------"
                 echo upgrade_output
                 echo "------------------------------------"
                 break
             } else if (i == (retries -1)){
+                /*
                 try{
                   sh """
                       echo "Completed: \$(date +%s)" >> upgrade_time.txt
@@ -667,6 +671,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
                   echo "Failure writing upgrade_time"
                   echo err.message
                 }
+                */
                 error "Upgrade failed, exceeded retries"
             }
         }
