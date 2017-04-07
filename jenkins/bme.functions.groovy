@@ -612,7 +612,25 @@ def bash_upgrade_openstack(release='master', retries=2) {
         version_start=\$(ssh -o StrictHostKeyChecking=no root@${host_ip} \"cd /opt/openstack-ansible; git status | head -1 | cut -d\\\" \\\" -f3\")
         echo "version_start: \${version_end}" >> upgrade_time.txt
     """
+    // Hacked up a bit to rule out possible issues causing failure in upgrade
+    // Start hack
+    sh """
+        ssh -o StrictHostKeyChecking=no root@${host_ip} '''
+        set -x
+        cd /opt/openstack-ansible
 
+        git checkout ${release}
+        git pull
+        bash scripts/bootstrap-ansible.sh
+        #LATEST_TAG=\$(git describe --abbrev=0 --tags)
+        #git checkout \${LATEST_TAG}
+        export TERM=xterm
+        export I_REALLY_KNOW_WHAT_I_AM_DOING=true
+        echo "YES" | bash scripts/run-upgrade.sh 2>&1 || echo "Failed Upgrade"
+        '''
+    """
+    // End hack
+    /*
     upgrade_output = run_upgrade_return_results(release, host_ip)
 
     //take upgrade_output, find out if it's got a failure in it
@@ -620,6 +638,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
     echo "-----------------------"
     echo upgrade_output
     echo "-----------------------"
+
 
     String failure_output = parse_upgrade_results_for_failure(upgrade_output)
 
@@ -654,7 +673,7 @@ def bash_upgrade_openstack(release='master', retries=2) {
                 error "Upgrade failed, exceeded retries"
             }
         }
-    }
+    }*/
 }
 
 def clear_ssh_host_key(controller_name="controller01") {

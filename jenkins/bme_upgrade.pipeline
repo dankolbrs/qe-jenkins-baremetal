@@ -16,7 +16,7 @@ stage('Pre-Deployment -- Load Libs'){
     node('bme-jenkins-slave-n01') {
         // Load the external functions using master since the git command
         // might not be available at the agent yet
-        fileLoader.withGit('https://github.com/osic/qe-jenkins-baremetal.git', 'master', null, '') {
+        fileLoader.withGit('https://github.com/dankolbrs/qe-jenkins-baremetal.git', 'strip_upgrade', null, '') {
             common = fileLoader.load('jenkins/common.groovy');
             osa = fileLoader.load('jenkins/osa_onmetal.functions.groovy');
             bme = fileLoader.load('jenkins/bme.functions.groovy');
